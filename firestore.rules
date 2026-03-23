@@ -1,0 +1,137 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ============================================
+    // HELPER FUNCTIONS
+    // ============================================
+
+    // Check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if user is admin (custom claim)
+    function isAdmin() {
+      return isAuthenticated() && request.auth.token.admin == true;
+    }
+
+    // ============================================
+    // CATEGORIES COLLECTION
+    // Public read, admin write only
+    // ============================================
+    match /categories/{document=**} {
+      allow read: if true;  // Everyone can read categories
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ============================================
+    // NOMINEES COLLECTION
+    // Public read, admin write only
+    // ============================================
+    match /nominees/{document=**} {
+      allow read: if true;  // Everyone can read nominees
+      allow create: if isAdmin();
+      allow update: if isAdmin();  // Cloud Functions will update voteCount
+      allow delete: if isAdmin();
+    }
+
+    // ============================================
+    // VOTES COLLECTION (IMMUTABLE - Audit Trail)
+    // PUBLIC WRITE - Anyone can create votes without login!
+    // Cloud Functions validates CamPay payment before accepting
+    // ============================================
+    match /votes/{document=**} {
+      // Anyone can read votes (public leaderboard)
+      allow read: if true;
+
+      // ANYONE can create a vote - NO LOGIN REQUIRED!
+      // Fields must include: nomineeId, categoryId, voteCount, amountXAF, transactionId, paymentStatus, timestamp
+      // Cloud Function will validate the CamPay payment before confirming vote
+      allow create: if request.resource.data.keys().hasAll([
+        'nomineeId',
+        'categoryId',
+        'voteCount',
+        'amountXAF',
+        'transactionId',
+        'paymentStatus',
+        'timestamp'
+      ]) &&
+      request.resource.data.nomineeId is string &&
+      request.resource.data.categoryId is string &&
+      request.resource.data.voteCount is number &&
+      request.resource.data.amountXAF is number &&
+      request.resource.data.transactionId is string &&
+      request.resource.data.paymentStatus is string &&
+      request.resource.data.voteCount > 0 &&
+      request.resource.data.amountXAF > 0;
+
+      // NO UPDATES or DELETES allowed (immutable audit trail)
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // ============================================
+    // PODCASTS COLLECTION
+    // Public read, admin write only
+    // ============================================
+    match /podcasts/{document=**} {
+      allow read: if true;  // Everyone can read podcasts
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ============================================
+    // GALLERY IMAGES COLLECTION
+    // Public read, admin write only
+    // ============================================
+    match /galleryImages/{document=**} {
+      allow read: if true;  // Everyone can read gallery
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ============================================
+    // CONTACT SUBMISSIONS COLLECTION
+    // Public write (anyone can submit), admin read
+    // ============================================
+    match /contactSubmissions/{document=**} {
+      // Anyone can create a new submission
+      allow create: if request.resource.data.keys().hasAll([
+        'name',
+        'email',
+        'subject',
+        'message'
+      ]) &&
+      request.resource.data.name is string &&
+      request.resource.data.email is string &&
+      request.resource.data.subject is string &&
+      request.resource.data.message is string &&
+      request.resource.data.name.size() > 0 &&
+      request.resource.data.email.size() > 0 &&
+      request.resource.data.name.size() <= 100 &&
+      request.resource.data.message.size() <= 2000;
+
+      // Only admin can read submissions
+      allow read: if isAdmin();
+
+      // Only admin can update (change status, add response)
+      allow update: if isAdmin();
+
+      // Only admin can delete
+      allow delete: if isAdmin();
+    }
+
+    // ============================================
+    // CATCH-ALL
+    // Deny everything else
+    // ============================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

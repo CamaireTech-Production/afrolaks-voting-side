@@ -11,6 +11,8 @@ function TikTokIcon({ className, style }: { className?: string; style?: React.CS
     );
 }
 import { useState } from 'react';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 export default function Contact() {
     const [formData, setFormData] = useState({
@@ -21,15 +23,44 @@ export default function Contact() {
     });
 
     const [submitted, setSubmitted] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Simulate form submission
-        setSubmitted(true);
-        setTimeout(() => {
-            setSubmitted(false);
+        setLoading(true);
+        setError(null);
+
+        try {
+            // Validate form data
+            if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+                throw new Error('Tous les champs sont requis');
+            }
+
+            // Add submission to Firestore
+            await addDoc(collection(db, 'contactSubmissions'), {
+                name: formData.name,
+                email: formData.email,
+                subject: formData.subject,
+                message: formData.message,
+                timestamp: serverTimestamp(),
+                status: 'new',
+            });
+
+            // Success feedback
+            setSubmitted(true);
             setFormData({ name: '', email: '', subject: '', message: '' });
-        }, 3000);
+
+            // Reset success state after 3 seconds
+            setTimeout(() => {
+                setSubmitted(false);
+            }, 3000);
+        } catch (err) {
+            console.error('Erreur lors de la soumission:', err);
+            setError((err as Error).message || 'Erreur lors de la soumission du formulaire');
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -163,6 +194,12 @@ export default function Contact() {
                                 </motion.div>
                             ) : (
                                 <form onSubmit={handleSubmit} className="space-y-6">
+                                    {/* Error Message */}
+                                    {error && (
+                                        <div className="p-4 rounded-2xl bg-[#FF0000]/20 border border-[#FF0000]/50">
+                                            <p className="text-[#FF0000] font-semibold">{error}</p>
+                                        </div>
+                                    )}
                                     <div className="grid md:grid-cols-2 gap-6">
                                         <div>
                                             <label className="block text-sm font-bold text-gray-300 mb-2 uppercase">
@@ -232,12 +269,17 @@ export default function Contact() {
 
                                     <motion.button
                                         type="submit"
-                                        className="w-full py-4 rounded-full bg-gradient-to-r from-[#FF0000] via-[#FF6A01] to-[#FFBD01] text-black font-bold uppercase flex items-center justify-center gap-2"
-                                        whileHover={{ scale: 1.02 }}
-                                        whileTap={{ scale: 0.98 }}
+                                        disabled={loading}
+                                        className={`w-full py-4 rounded-full ${
+                                            loading
+                                                ? 'bg-gray-500 cursor-not-allowed'
+                                                : 'bg-gradient-to-r from-[#FF0000] via-[#FF6A01] to-[#FFBD01] hover:shadow-lg'
+                                        } text-black font-bold uppercase flex items-center justify-center gap-2 transition-all`}
+                                        whileHover={!loading ? { scale: 1.02 } : {}}
+                                        whileTap={!loading ? { scale: 0.98 } : {}}
                                     >
                                         <Send className="w-5 h-5" />
-                                        Send Message
+                                        {loading ? 'Envoi en cours...' : 'Send Message'}
                                     </motion.button>
                                 </form>
                             )}

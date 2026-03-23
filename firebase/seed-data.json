@@ -1,0 +1,208 @@
+{
+  "categories": [
+    {
+      "id": "best-dj",
+      "name": "Best DJ",
+      "description": "Recognizing the finest turntable maestros who keep the dancefloor alive",
+      "icon": "🎧",
+      "order": 1,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z"
+    },
+    {
+      "id": "hype-mc",
+      "name": "Hype MC of the Year",
+      "description": "The voice that amplifies the energy and commands the microphone",
+      "icon": "🎤",
+      "order": 2,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z"
+    },
+    {
+      "id": "influencer",
+      "name": "Nightlife Influencer",
+      "description": "Shaping culture through social impact and authentic connections",
+      "icon": "⭐",
+      "order": 3,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z"
+    },
+    {
+      "id": "event-organizer",
+      "name": "Event Organizer",
+      "description": "Curating unforgettable experiences that bring communities together",
+      "icon": "🎉",
+      "order": 4,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z"
+    }
+  ],
+  "nominees": [
+    {
+      "id": "dj-spinall",
+      "name": "DJ Spinall",
+      "bio": "The Party Starter - Master of rhythm and groove",
+      "image": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500&h=500",
+      "categoryId": "best-dj",
+      "voteCount": 0,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "id": "dj-cuppy",
+      "name": "DJ Cuppy",
+      "bio": "Electronic Music Revolution - Breaking boundaries",
+      "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=500&h=500",
+      "categoryId": "best-dj",
+      "voteCount": 0,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "id": "dj-neptune",
+      "name": "DJ Neptune",
+      "bio": "Wave Maker - Creating sonic landscapes",
+      "image": "https://images.unsplash.com/photo-1459749411175-0a0df8a09e10?w=500&h=500",
+      "categoryId": "best-dj",
+      "voteCount": 0,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "id": "mc-presido",
+      "name": "MC Presido",
+      "bio": "The Voice - Commanding presence on stage",
+      "image": "https://images.unsplash.com/photo-1511379938547-c1f69b13d835?w=500&h=500",
+      "categoryId": "hype-mc",
+      "voteCount": 0,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "id": "mc-vybez",
+      "name": "MC Vybez",
+      "bio": "Energy Keeper - Keeping the vibe alive",
+      "image": "https://images.unsplash.com/photo-1516450360452-9312f5e14d75?w=500&h=500",
+      "categoryId": "hype-mc",
+      "voteCount": 0,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "id": "toke-makinwa",
+      "name": "Toke Makinwa",
+      "bio": "Media Mogul - Influential storyteller",
+      "image": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&h=500",
+      "categoryId": "influencer",
+      "voteCount": 0,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "id": "pamilerin-adegoke",
+      "name": "Pamilerin Adegoke",
+      "bio": "Entertainment Strategist - Building communities",
+      "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=500",
+      "categoryId": "influencer",
+      "voteCount": 0,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "id": "obi-asika",
+      "name": "Obi Asika",
+      "bio": "Experience Curator - Master of events",
+      "image": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&h=500",
+      "categoryId": "event-organizer",
+      "voteCount": 0,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "id": "ayo-animashaun",
+      "name": "Ayo Animashaun",
+      "bio": "Event Visionary - Creating memorable moments",
+      "image": "https://images.unsplash.com/photo-1491841573634-28fb1df537d1?w=500&h=500",
+      "categoryId": "event-organizer",
+      "voteCount": 0,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    }
+  ],
+  "podcasts": [
+    {
+      "id": "ep-001",
+      "episodeNumber": 1,
+      "title": "The Art of the DJ",
+      "guest": "DJ Spinall",
+      "duration": "45 min",
+      "description": "Exploring the craft behind perfect turntable mixing",
+      "order": 1,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z"
+    },
+    {
+      "id": "ep-002",
+      "episodeNumber": 2,
+      "title": "Building Event Experiences",
+      "guest": "Obi Asika",
+      "duration": "52 min",
+      "description": "How to create unforgettable nightlife events",
+      "order": 2,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z"
+    },
+    {
+      "id": "ep-003",
+      "episodeNumber": 3,
+      "title": "The MC's Journey",
+      "guest": "MC Presido",
+      "duration": "38 min",
+      "description": "From starting out to becoming a hype mastermind",
+      "order": 3,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z"
+    },
+    {
+      "id": "ep-004",
+      "episodeNumber": 4,
+      "title": "Influencing the Night",
+      "guest": "Toke Makinwa",
+      "duration": "41 min",
+      "description": "How social impact shapes nightlife culture",
+      "order": 4,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z"
+    },
+    {
+      "id": "ep-005",
+      "episodeNumber": 5,
+      "title": "Electronic Music Revolution",
+      "guest": "DJ Cuppy",
+      "duration": "48 min",
+      "description": "The future of African electronic music",
+      "order": 5,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z"
+    }
+  ],
+  "galleryImages": [
+    {
+      "id": "gallery-001",
+      "url": "/official flyers/Guest.jpg.jpeg",
+      "alt": "Afrolaks Event Gallery",
+      "order": 1,
+      "category": "event",
+      "createdAt": "2026-03-23T00:00:00Z"
+    }
+  ]
+}

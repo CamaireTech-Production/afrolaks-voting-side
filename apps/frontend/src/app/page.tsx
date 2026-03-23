@@ -5,9 +5,19 @@ import { ArrowRight, Award, Radio, Users, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 import { useState, useEffect } from 'react';
+import { usePodcasts } from '@/hooks/usePodcasts';
+import { useGalleryImages } from '@/hooks/useGalleryImages';
 
 export default function Home() {
-  const galleryImages = [
+  // Fetch data from Firestore
+  const { podcasts, loading: podcastLoading } = usePodcasts();
+  const { images: galleryImagesData, loading: galleryLoading } = useGalleryImages();
+
+  // Fallback images if Firestore data fails
+  const galleryImages = galleryImagesData.length > 0 ? galleryImagesData.map(img => ({
+    url: img.url,
+    alt: img.alt,
+  })) : [
     { url: '/dj.png', alt: 'DJ Performance' },
     { url: '/gitl in nightclub.png', alt: 'Girl in Nightclub' },
     { url: '/nightlife.png', alt: 'Nightlife Experience' },
@@ -16,13 +26,12 @@ export default function Home() {
     { url: '/official flyers/Couverture video.jpg.jpeg', alt: 'Afrolaks Video Cover' },
   ];
 
-  const podcastEpisodes = [
-    { id: 1, title: 'The Art of the DJ', guest: 'DJ Spinall', duration: '45 min' },
-    { id: 2, title: 'Hype MC Secrets', guest: 'MC Presido', duration: '38 min' },
-    { id: 3, title: 'Building Nightlife Brands', guest: 'Obi Asika', duration: '52 min' },
-    { id: 4, title: 'The Culture of the Dance Floor', guest: 'DJ Neptune', duration: '41 min' },
-    { id: 5, title: 'Influencer Impact', guest: 'Toke Makinwa', duration: '36 min' },
-  ];
+  const podcastEpisodes = podcasts.map(ep => ({
+    id: ep.id,
+    title: ep.title,
+    guest: ep.guest,
+    duration: ep.duration,
+  }));
 
   const features = [
     { icon: Award, title: 'Prestigious Awards', description: 'Celebrating excellence like the Grammys of nightlife' },

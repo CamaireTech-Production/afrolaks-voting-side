@@ -1,0 +1,33 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Permettre les uploads pour les utilisateurs authentifiés
+    match /{document=**} {
+      allow read: if true; // Lecture publique pour les images
+      allow write: if request.auth != null
+        && request.resource.size < 10 * 1024 * 1024; // Max 10MB
+    }
+
+    // Dossier spécifique pour les nominations
+    match /nominees/{allPaths=**} {
+      allow read: if true; // Lecture publique
+      allow write: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+
+    // Dossier spécifique pour la galerie
+    match /gallery/{allPaths=**} {
+      allow read: if true; // Lecture publique
+      allow write: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+
+    // Dossier uploads général
+    match /uploads/{allPaths=**} {
+      allow read: if true; // Lecture publique
+      allow write: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+  }
+}
+

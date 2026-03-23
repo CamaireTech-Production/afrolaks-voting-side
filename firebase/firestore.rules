@@ -1,0 +1,128 @@
+// Firestore Security Rules
+// Deploy with: firebase deploy --only firestore:rules
+//
+// Rules Strategy:
+// 1. Public READ on categories, nominees, podcasts, gallery (everyone can view)
+// 2. Protected WRITE (only Cloud Functions or admins)
+// 3. Contact submissions: anyone can CREATE, only admin can READ/UPDATE
+// 4. Votes: immutable (only via Cloud Functions)
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ==========================================
+    // HELPER FUNCTIONS
+    // ==========================================
+
+    // Check if user is authenticated
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    // Check if user is admin (custom claim)
+    function isAdmin() {
+      return isAuth() && request.auth.token.admin == true;
+    }
+
+    // ==========================================
+    // CATEGORIES - Public Read, Admin Write
+    // ==========================================
+    match /categories/{categoryId} {
+      // Anyone can read categories
+      allow read: if true;
+
+      // Only admin or Cloud Functions can write
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ==========================================
+    // NOMINEES - Public Read, Admin Write
+    // ==========================================
+    match /nominees/{nomineeId} {
+      // Anyone can read nominees
+      allow read: if true;
+
+      // Only admin or Cloud Functions can write
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ==========================================
+    // VOTES - Immutable Audit Trail
+    // PUBLIC WRITE (anyone can create votes)
+    // Cloud Functions validates payment before accepting
+    // ==========================================
+    match /votes/{voteId} {
+      // Anyone can read votes (public leaderboard)
+      allow read: if true;
+
+      // ANYONE can create votes (no login required!)
+      // Required fields: nomineeId, categoryId, voteCount, amountXAF, transactionId, timestamp
+      // Cloud Function will validate the CamPay payment before confirming
+      allow create: if request.resource.data.keys().hasAll([
+        'nomineeId',
+        'categoryId',
+        'voteCount',
+        'amountXAF',
+        'transactionId',
+        'paymentStatus',
+        'timestamp'
+      ]);
+
+      // No updates or deletes (immutable audit trail)
+      allow update, delete: if false;
+    }
+
+    // ==========================================
+    // PODCASTS - Public Read, Admin Write
+    // ==========================================
+    match /podcasts/{podcastId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ==========================================
+    // GALLERY IMAGES - Public Read, Admin Write
+    // ==========================================
+    match /galleryImages/{imageId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ==========================================
+    // CONTACT SUBMISSIONS
+    // Anyone can create, only admin can read/update
+    // ==========================================
+    match /contactSubmissions/{submissionId} {
+      // Anyone can create contact submissions
+      allow create: if request.resource.data.keys().hasAll(['name', 'email', 'subject', 'message', 'timestamp']);
+
+      // Only admin can read contact submissions
+      allow read: if isAdmin();
+
+      // Only admin can update (mark as read, add response)
+      allow update: if isAdmin() &&
+        // Only allow specific fields to be updated
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'response']);
+
+      // Only admin can delete
+      allow delete: if isAdmin();
+    }
+
+    // ==========================================
+    // ADMIN SETTINGS (optional future collection)
+    // ==========================================
+    match /settings/{document=**} {
+      allow read: if isAuth();
+      allow write: if isAdmin();
+    }
+
+    // ==========================================
+    // DEFAULT DENY
+    // ==========================================
+    // Deny everything else by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

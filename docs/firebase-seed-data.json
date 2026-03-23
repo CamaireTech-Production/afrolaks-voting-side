@@ -1,0 +1,311 @@
+{
+  "categories": [
+    {
+      "id": "best-dj",
+      "name": "Best DJ",
+      "description": "Recognizing the finest turntable maestros spinning the hottest beats in African nightlife",
+      "icon": "🎧",
+      "order": 1,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "id": "hype-mc",
+      "name": "Hype MC of the Year",
+      "description": "The voice that amplifies the energy and sets the vibe for unforgettable nights",
+      "icon": "🎤",
+      "order": 2,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "id": "influencer",
+      "name": "Nightlife Influencer",
+      "description": "Shaping African nightlife culture through social impact and authentic storytelling",
+      "icon": "⭐",
+      "order": 3,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "id": "event-organizer",
+      "name": "Event Organizer",
+      "description": "Curating unforgettable experiences that define the African nightlife scene",
+      "icon": "🎉",
+      "order": 4,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    }
+  ],
+  "nominees": [
+    {
+      "id": "dj-spinall",
+      "name": "DJ Spinall",
+      "bio": "The Party Starter - Master of synchronized turntables and infectious energy",
+      "image": "https://images.unsplash.com/photo-1511379938547-c1f69b13d835?w=500&h=500&fit=crop",
+      "categoryId": "best-dj",
+      "voteCount": 0,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "id": "dj-cuppy",
+      "name": "DJ Cuppy",
+      "bio": "Afrobeats Pioneer - Blending world-class production with African Heritage",
+      "image": "https://images.unsplash.com/photo-1535016120754-fd45c1d3a419?w=500&h=500&fit=crop",
+      "categoryId": "best-dj",
+      "voteCount": 0,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "id": "dj-neptune",
+      "name": "DJ Neptune",
+      "bio": "Sonic Innovator - Crafting electrifying rhythms that move the masses",
+      "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=500&h=500&fit=crop",
+      "categoryId": "best-dj",
+      "voteCount": 0,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "id": "dj-obi",
+      "name": "DJ OBI",
+      "bio": "Beat Alchemist - Transforming sounds into unforgettable experiences",
+      "image": "https://images.unsplash.com/photo-1505628346881-b72b27e84530?w=500&h=500&fit=crop",
+      "categoryId": "best-dj",
+      "voteCount": 0,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "id": "mc-presido",
+      "name": "MC Presido",
+      "bio": "Lyrical Genius - Words that ignite the crowd and set tongues on fire",
+      "image": "https://images.unsplash.com/photo-1516315190212-d2e9dd038bbf?w=500&h=500&fit=crop",
+      "categoryId": "hype-mc",
+      "voteCount": 0,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "id": "mc-vybez",
+      "name": "MC Vybez",
+      "bio": "Energy Conductor - Commanding the mic with unmatched charisma",
+      "image": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500&h=500&fit=crop",
+      "categoryId": "hype-mc",
+      "voteCount": 0,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "id": "mc-galaxy",
+      "name": "MC Galaxy",
+      "bio": "Crowd Magnetizer - Creating moments that become legends",
+      "image": "https://images.unsplash.com/photo-1429148882759-dfafba3eba5e?w=500&h=500&fit=crop",
+      "categoryId": "hype-mc",
+      "voteCount": 0,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "id": "influencer-toke",
+      "name": "Toke Makinwa",
+      "bio": "Media Mogul - Influencing millions with authentic voice and bold storytelling",
+      "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=500&fit=crop",
+      "categoryId": "influencer",
+      "voteCount": 0,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "id": "influencer-pamilerin",
+      "name": "Pamilerin Adegoke",
+      "bio": "Culture Curator - Shaping trends and celebrating African excellence",
+      "image": "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&h=500&fit=crop",
+      "categoryId": "influencer",
+      "voteCount": 0,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "id": "influencer-shank",
+      "name": "Shank Comics",
+      "bio": "Entertainment Kingpin - Making moments memorable with humor and flair",
+      "image": "https://images.unsplash.com/photo-1489749798305-4fea3ba63d60?w=500&h=500&fit=crop",
+      "categoryId": "influencer",
+      "voteCount": 0,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "id": "organizer-obi",
+      "name": "Obi Asika",
+      "bio": "Experience Architect - Building legendary nights that define generations",
+      "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=500&fit=crop",
+      "categoryId": "event-organizer",
+      "voteCount": 0,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "id": "organizer-ayo",
+      "name": "Ayo Animashaun",
+      "bio": "Vision Realizer - Transforming dreams into blockbuster events",
+      "image": "https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=500&h=500&fit=crop",
+      "categoryId": "event-organizer",
+      "voteCount": 0,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "id": "organizer-shina",
+      "name": "Shina Peller",
+      "bio": "Nightlife Visionary - Curating exclusive experiences for Africa's elite",
+      "image": "https://images.unsplash.com/photo-1507528148343-53602b94b711?w=500&h=500&fit=crop",
+      "categoryId": "event-organizer",
+      "voteCount": 0,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z",
+      "isActive": true
+    }
+  ],
+  "podcasts": [
+    {
+      "id": "ep-001",
+      "episodeNumber": 1,
+      "title": "The Art of the DJ",
+      "guest": "DJ Spinall",
+      "duration": "45 min",
+      "description": "Deep dive into turntable mastery and the evolution of African DJ culture",
+      "image": "https://images.unsplash.com/photo-1511379938547-c1f69b13d835?w=500&h=500&fit=crop",
+      "audioUrl": "https://example.com/episodes/ep-001.mp3",
+      "spotifyLink": "https://spotify.com/episode/001",
+      "order": 1,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z"
+    },
+    {
+      "id": "ep-002",
+      "episodeNumber": 2,
+      "title": "MC Presido: Commanding the Mic",
+      "guest": "MC Presido",
+      "duration": "52 min",
+      "description": "The power of words and how MCs energize crowds across Africa",
+      "image": "https://images.unsplash.com/photo-1516315190212-d2e9dd038bbf?w=500&h=500&fit=crop",
+      "audioUrl": "https://example.com/episodes/ep-002.mp3",
+      "spotifyLink": "https://spotify.com/episode/002",
+      "order": 2,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z"
+    },
+    {
+      "id": "ep-003",
+      "episodeNumber": 3,
+      "title": "Behind the Scenes: Event Organization",
+      "guest": "Obi Asika",
+      "duration": "48 min",
+      "description": "Creating unforgettable experiences - from concept to execution",
+      "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=500&fit=crop",
+      "audioUrl": "https://example.com/episodes/ep-003.mp3",
+      "spotifyLink": "https://spotify.com/episode/003",
+      "order": 3,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z"
+    },
+    {
+      "id": "ep-004",
+      "episodeNumber": 4,
+      "title": "Influencing Culture",
+      "guest": "Toke Makinwa",
+      "duration": "55 min",
+      "description": "How African influencers shape nightlife and entertainment trends",
+      "image": "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&h=500&fit=crop",
+      "audioUrl": "https://example.com/episodes/ep-004.mp3",
+      "spotifyLink": "https://spotify.com/episode/004",
+      "order": 4,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z"
+    },
+    {
+      "id": "ep-005",
+      "episodeNumber": 5,
+      "title": "The Evolution of Afrobeats",
+      "guest": "DJ Cuppy",
+      "duration": "51 min",
+      "description": "From traditional rhythms to global domination - the Afrobeats journey",
+      "image": "https://images.unsplash.com/photo-1535016120754-fd45c1d3a419?w=500&h=500&fit=crop",
+      "audioUrl": "https://example.com/episodes/ep-005.mp3",
+      "spotifyLink": "https://spotify.com/episode/005",
+      "order": 5,
+      "createdAt": "2026-03-23T00:00:00Z",
+      "updatedAt": "2026-03-23T00:00:00Z"
+    }
+  ],
+  "galleryImages": [
+    {
+      "id": "gallery-001",
+      "url": "/gallery/dj-performance-1.jpg",
+      "alt": "DJ performing on stage with crowd",
+      "order": 1,
+      "category": "event",
+      "createdAt": "2026-03-23T00:00:00Z"
+    },
+    {
+      "id": "gallery-002",
+      "url": "/gallery/crowd-energy.jpg",
+      "alt": "Energetic crowd at nightlife event",
+      "order": 2,
+      "category": "event",
+      "createdAt": "2026-03-23T00:00:00Z"
+    },
+    {
+      "id": "gallery-003",
+      "url": "/gallery/stage-lights.jpg",
+      "alt": "Stage with professional lighting setup",
+      "order": 3,
+      "category": "event",
+      "createdAt": "2026-03-23T00:00:00Z"
+    },
+    {
+      "id": "gallery-004",
+      "url": "/gallery/award-ceremony.jpg",
+      "alt": "Award ceremony moments",
+      "order": 4,
+      "category": "awards",
+      "createdAt": "2026-03-23T00:00:00Z"
+    },
+    {
+      "id": "gallery-005",
+      "url": "/gallery/winners-celebration.jpg",
+      "alt": "Previous award winners celebrating",
+      "order": 5,
+      "category": "awards",
+      "createdAt": "2026-03-23T00:00:00Z"
+    },
+    {
+      "id": "gallery-006",
+      "url": "/gallery/venue-overview.jpg",
+      "alt": "Beautiful venue overview",
+      "order": 6,
+      "category": "venue",
+      "createdAt": "2026-03-23T00:00:00Z"
+    }
+  ]
+}

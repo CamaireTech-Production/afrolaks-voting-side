@@ -21,6 +21,7 @@ export default defineConfig({
   assetsInclude: ['**/*.svg', '**/*.csv'],
 
   server: {
+    host: '0.0.0.0',
     port: 2030,
     strictPort: true,
   }

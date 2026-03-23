@@ -6,12 +6,15 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Disc3, Mic2, Users, Calendar } from 'lucide-react';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 import { VoteModal } from '@/components/VoteModal';
+import { useCategories } from '@/hooks/useCategories';
+import { useNominees } from '@/hooks/useNominees';
 
 type Category = {
     id: string;
     name: string;
-    icon: React.ElementType;
+    icon?: React.ElementType;
     description: string;
+    order?: number;
 };
 
 type Nominee = {
@@ -28,11 +31,38 @@ function AwardsContent() {
     const [voteModalOpen, setVoteModalOpen] = useState(false);
     const [selectedNominee, setSelectedNominee] = useState<{ name: string; category: string } | null>(null);
 
+    // Fetch data from Firestore
+    const { categories: firestoreCategories, loading: catLoading, error: catError } = useCategories();
+    const { nominees: firestoreNominees, loading: nomLoading, error: nomError } = useNominees();
+
+    // Map Firestore categories to include icons
+    const getCategoryIcon = (categoryId: string) => {
+        const iconMap: { [key: string]: React.ElementType } = {
+            'best-dj': Disc3,
+            'hype-mc': Mic2,
+            'influencer': Users,
+            'event-organizer': Calendar,
+        };
+        return iconMap[categoryId] || Disc3;
+    };
+
+    const categories: Category[] = firestoreCategories.map(cat => ({
+        ...cat,
+        icon: getCategoryIcon(cat.id),
+    }));
+
+    const nominees: Nominee[] = firestoreNominees.map(nom => ({
+        id: nom.id,
+        name: nom.name,
+        image: nom.image,
+        bio: nom.bio,
+        categoryId: nom.categoryId,
+    }));
+
     // Smooth scroll to categories section when coming from Home page "Vote Now" button
     useEffect(() => {
         const shouldScroll = searchParams.get('vote') === 'true';
         if (shouldScroll) {
-            // Wait for the page to fully render, then smooth scroll
             setTimeout(() => {
                 const el = document.getElementById('categories');
                 if (el) {
@@ -42,56 +72,6 @@ function AwardsContent() {
         }
     }, [searchParams]);
 
-    const categories: Category[] = [
-        {
-            id: 'best-dj',
-            name: 'Best DJ',
-            icon: Disc3,
-            description: 'Recognizing the finest turntable maestros',
-        },
-        {
-            id: 'hype-mc',
-            name: 'Hype MC of the Year',
-            icon: Mic2,
-            description: 'The voice that amplifies the energy',
-        },
-        {
-            id: 'influencer',
-            name: 'Nightlife Influencer',
-            icon: Users,
-            description: 'Shaping culture through social impact',
-        },
-        {
-            id: 'event-organizer',
-            name: 'Event Organizer',
-            icon: Calendar,
-            description: 'Curating unforgettable experiences',
-        },
-    ];
-
-    const nominees: Nominee[] = [
-        // Best DJ
-        { id: '1', name: 'DJ Spinall', image: 'https://images.unsplash.com/photo-1619452220963-4da4e145aba9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhZnJpY2FuJTIwREolMjBwb3J0cmFpdCUyMHByb2Zlc3Npb25hbHxlbnwxfHx8fDE3NzE5Mjg1OTB8MA&ixlib=rb-4.1.0&q=80&w=1080', bio: 'The Party Starter', categoryId: 'best-dj' },
-        { id: '2', name: 'DJ Cuppy', image: 'https://images.unsplash.com/photo-1673447067622-bbc8a34e2c56?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhZnJpY2FuJTIwd29tYW4lMjBESnxlbnwxfHx8fDE3NzE5Mjg1OTB8MA&ixlib=rb-4.1.0&q=80&w=1080', bio: 'Global Ambassador', categoryId: 'best-dj' },
-        { id: '3', name: 'DJ Neptune', image: 'https://images.unsplash.com/photo-1633340784226-4ab9b7bfefbe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhZnJpY2FuJTIwbXVzaWNpYW4lMjBwb3J0cmFpdHxlbnwxfHx8fDE3NzE5Mjg1OTJ8MA&ixlib=rb-4.1.0&q=80&w=1080', bio: 'Greatness Personified', categoryId: 'best-dj' },
-        { id: '4', name: 'DJ Obi', image: 'https://images.unsplash.com/photo-1619452220963-4da4e145aba9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhZnJpY2FuJTIwREolMjBwb3J0cmFpdCUyMHByb2Zlc3Npb25hbHxlbnwxfHx8fDE3NzE5Mjg1OTB8MA&ixlib=rb-4.1.0&q=80&w=1080', bio: 'Record Breaker', categoryId: 'best-dj' },
-
-        // Hype MC
-        { id: '5', name: 'MC Presido', image: 'https://images.unsplash.com/photo-1746189861370-7a41351d7f11?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhZnJpY2FuJTIwbWFsZSUyME1DJTIwcGVyZm9ybWVyfGVufDF8fHx8MTc3MTkyODU5MXww&ixlib=rb-4.1.0&q=80&w=1080', bio: 'Energy Personified', categoryId: 'hype-mc' },
-        { id: '6', name: 'MC Vybez', image: 'https://images.unsplash.com/photo-1633340784226-4ab9b7bfefbe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhZnJpY2FuJTIwbXVzaWNpYW4lMjBwb3J0cmFpdHxlbnwxfHx8fDE3NzE5Mjg1OTJ8MA&ixlib=rb-4.1.0&q=80&w=1080', bio: 'The Crowd Controller', categoryId: 'hype-mc' },
-        { id: '7', name: 'MC Galaxy', image: 'https://images.unsplash.com/photo-1746189861370-7a41351d7f11?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhZnJpY2FuJTIwbWFsZSUyME1DJTIwcGVyZm9ybWVyfGVufDF8fHx8MTc3MTkyODU5MXww&ixlib=rb-4.1.0&q=80&w=1080', bio: 'Star Performer', categoryId: 'hype-mc' },
-
-        // Influencer
-        { id: '8', name: 'Toke Makinwa', image: 'https://images.unsplash.com/photo-1559154352-06e29e1e11aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhZnJpY2FuJTIwZmVtYWxlJTIwaW5mbHVlbmNlcnxlbnwxfHx8fDE3NzE5Mjg1OTF8MA&ixlib=rb-4.1.0&q=80&w=1080', bio: 'Media Mogul', categoryId: 'influencer' },
-        { id: '9', name: 'Pamilerin Adegoke', image: 'https://images.unsplash.com/photo-1633340784226-4ab9b7bfefbe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhZnJpY2FuJTIwbXVzaWNpYW4lMjBwb3J0cmFpdHxlbnwxfHx8fDE3NzE5Mjg1OTJ8MA&ixlib=rb-4.1.0&q=80&w=1080', bio: 'Culture Curator', categoryId: 'influencer' },
-        { id: '10', name: 'Shank Comics', image: 'https://images.unsplash.com/photo-1746189861370-7a41351d7f11?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhZnJpY2FuJTIwbWFsZSUyME1DJTIwcGVyZm9ybWVyfGVufDF8fHx8MTc3MTkyODU5MXww&ixlib=rb-4.1.0&q=80&w=1080', bio: 'Digital Storyteller', categoryId: 'influencer' },
-
-        // Event Organizer
-        { id: '11', name: 'Obi Asika', image: 'https://images.unsplash.com/photo-1712903276003-b814091e7770?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxldmVudCUyMG9yZ2FuaXplciUyMHByb2Zlc3Npb25hbHxlbnwxfHx8fDE3NzE5Mjg1OTJ8MA&ixlib=rb-4.1.0&q=80&w=1080', bio: 'Experience Architect', categoryId: 'event-organizer' },
-        { id: '12', name: 'Ayo Animashaun', image: 'https://images.unsplash.com/photo-1633340784226-4ab9b7bfefbe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhZnJpY2FuJTIwbXVzaWNpYW4lMjBwb3J0cmFpdHxlbnwxfHx8fDE3NzE5Mjg1OTJ8MA&ixlib=rb-4.1.0&q=80&w=1080', bio: 'Industry Pioneer', categoryId: 'event-organizer' },
-        { id: '13', name: 'Shina Peller', image: 'https://images.unsplash.com/photo-1619452220963-4da4e145aba9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhZnJpY2FuJTIwREolMjBwb3J0cmFpdCUyMHByb2Zlc3Npb25hbHxlbnwxfHx8fDE3NzE5Mjg1OTB8MA&ixlib=rb-4.1.0&q=80&w=1080', bio: 'Nightlife Visionary', categoryId: 'event-organizer' },
-    ];
-
     const handleVote = (nominee: Nominee) => {
         const category = categories.find((c) => c.id === nominee.categoryId);
         setSelectedNominee({
@@ -100,6 +80,30 @@ function AwardsContent() {
         });
         setVoteModalOpen(true);
     };
+
+    // Show loading state while fetching Firestore data
+    if (catLoading || nomLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#FFBD01]"></div>
+                    <p className="mt-4 text-gray-400">Chargement des catégories...</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Show error state if data failed to load
+    if (catError || nomError) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <h2 className="text-2xl font-bold text-[#FF0000] mb-4">Erreur de chargement</h2>
+                    <p className="text-gray-400">{catError || nomError}</p>
+                </div>
+            </div>
+        );
+    }
 
 
 
