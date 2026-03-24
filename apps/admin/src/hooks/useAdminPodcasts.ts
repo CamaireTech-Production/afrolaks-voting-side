@@ -4,15 +4,15 @@ import { collection, query, orderBy, onSnapshot, addDoc, updateDoc, deleteDoc, d
 
 interface Podcast {
   id: string;
-  episodeNumber: number;
   title: string;
-  guest: string;
-  duration: string;
-  description: string;
+  spotifyLink: string;
+  episodeNumber?: number;
+  guest?: string;
+  duration?: string;
+  description?: string;
   image?: string;
   audioUrl?: string;
-  spotifyLink?: string;
-  order: number;
+  order?: number;
   createdAt: any;
   updatedAt: any;
 }

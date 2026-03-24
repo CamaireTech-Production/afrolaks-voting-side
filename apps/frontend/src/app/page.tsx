@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import { ArrowRight, Award, Radio, Users, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
+import { HeroCarousel } from '@/components/HeroCarousel';
 import { useState, useEffect } from 'react';
 import { usePodcasts } from '@/hooks/usePodcasts';
 import { useGalleryImages } from '@/hooks/useGalleryImages';
@@ -31,6 +32,8 @@ export default function Home() {
     title: ep.title,
     guest: ep.guest,
     duration: ep.duration,
+    image: ep.image,
+    spotifyLink: ep.spotifyLink,
   }));
 
   const features = [
@@ -104,13 +107,8 @@ export default function Home() {
                 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold uppercase mb-6 tracking-tight leading-tight"
                 style={{ fontFamily: 'var(--font-headline)' }}
               >
-                <span className="block text-[#FFBD01]">REWARDING</span>
-                <span className="block text-[#FFBD01]">EXCELLENCE,</span>
-                <span className="block bg-gradient-to-r from-[#FF0000] via-[#FF6A01] to-[#FFBD01] bg-clip-text text-transparent">
-                  REDEFINING
-                </span>
-                <span className="block bg-gradient-to-r from-[#FF0000] via-[#FF6A01] to-[#FFBD01] bg-clip-text text-transparent">
-                  NIGHTLIFE
+                <span className="bg-gradient-to-r from-[#FF0000] via-[#FF6A01] to-[#FFBD01] bg-clip-text text-transparent">
+                  REWARDING NIGHTLIFE EXCELLENCE
                 </span>
               </motion.h1>
 
@@ -147,19 +145,14 @@ export default function Home() {
               </motion.div>
             </motion.div>
 
-            {/* Right Column: Image */}
+            {/* Right Column: Image Carousel */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
               className="relative mt-12 lg:mt-0"
             >
-              {/* Rounded Image */}
-              <ImageWithFallback
-                src="/official flyers/Couverture video.jpg.jpeg"
-                alt="Afrolaks Nightlife Experience"
-                className="relative z-10 w-full rounded-[2rem] object-cover"
-              />
+              <HeroCarousel />
             </motion.div>
           </div>
         </div>
@@ -269,31 +262,46 @@ export default function Home() {
 
           <div className="flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-[#FFBD01] scrollbar-track-white/10">
             {podcastEpisodes.map((episode, index) => (
-              <motion.div
+              <motion.a
                 key={episode.id}
-                className="min-w-[350px] snap-center p-6 rounded-3xl border border-[#FFBD01]/30 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm hover:border-[#FFBD01] transition-all cursor-pointer group"
+                href={episode.spotifyLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="min-w-[350px] snap-center rounded-3xl border border-[#FFBD01]/30 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm hover:border-[#FFBD01] transition-all cursor-pointer group overflow-hidden"
                 initial={{ opacity: 0, x: 50 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ scale: 1.03, y: -5 }}
               >
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#FF0000] to-[#FFBD01] flex items-center justify-center">
-                    <Radio className="w-8 h-8 text-black" />
+                {/* Image Preview */}
+                {episode.image && (
+                  <div className="relative h-48 overflow-hidden bg-black">
+                    <ImageWithFallback
+                      src={episode.image}
+                      alt={episode.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
-                  <div className="flex-1">
+                )}
+
+                {/* Info */}
+                <div className="p-6">
+                  <div className="flex items-center gap-3 mb-3">
                     <div className="text-sm text-[#FFBD01] font-bold uppercase">
-                      Episode {episode.id.toString().padStart(2, '0')}
+                      Episode {episode.id.toString().split('-')[1]?.padStart(2, '0') || '01'}
                     </div>
-                    <div className="text-xs text-gray-400">{episode.duration}</div>
+                    {episode.duration && (
+                      <div className="text-xs text-gray-400">{episode.duration}</div>
+                    )}
                   </div>
+                  <h3 className="text-xl font-bold mb-2 group-hover:text-[#FFBD01] transition-colors">
+                    {episode.title}
+                  </h3>
+                  <p className="text-gray-400 text-sm">with {episode.guest}</p>
                 </div>
-                <h3 className="text-xl font-bold mb-2 group-hover:text-[#FFBD01] transition-colors">
-                  {episode.title}
-                </h3>
-                <p className="text-gray-400">with {episode.guest}</p>
-              </motion.div>
+              </motion.a>
             ))}
           </div>
 

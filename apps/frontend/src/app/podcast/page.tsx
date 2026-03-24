@@ -3,70 +3,35 @@
 import { motion } from 'motion/react';
 import { Play, Calendar, Clock } from 'lucide-react';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
+import { usePodcasts } from '@/hooks/usePodcasts';
 
 export default function Podcast() {
-    const episodes = [
-        {
-            id: 1,
-            number: '01',
-            title: 'The Art of the DJ',
-            guest: 'DJ Spinall',
-            description: 'Exploring the craft behind the decks with one of Africa\'s finest DJs.',
-            duration: '45 min',
-            date: 'Feb 15, 2026',
-            image: 'https://images.unsplash.com/photo-1600542552868-56ed242290e7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxESiUyMHR1cm50YWJsZXMlMjBtaXhpbmd8ZW58MXx8fHwxNzcxOTI4NTI3fDA&ixlib=rb-4.1.0&q=80&w=1080',
-        },
-        {
-            id: 2,
-            number: '02',
-            title: 'Hype MC Secrets',
-            guest: 'MC Presido',
-            description: 'The untold secrets of controlling the crowd and keeping the energy high.',
-            duration: '38 min',
-            date: 'Feb 12, 2026',
-            image: 'https://images.unsplash.com/photo-1746189861370-7a41351d7f11?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhZnJpY2FuJTIwbWFsZSUyME1DJTIwcGVyZm9ybWVyfGVufDF8fHx8MTc3MTkyODU5MXww&ixlib=rb-4.1.0&q=80&w=1080',
-        },
-        {
-            id: 3,
-            number: '03',
-            title: 'Building Nightlife Brands',
-            guest: 'Obi Asika',
-            description: 'From concept to execution: creating experiences that last.',
-            duration: '52 min',
-            date: 'Feb 8, 2026',
-            image: 'https://images.unsplash.com/photo-1712903276003-b814091e7770?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxldmVudCUyMG9yZ2FuaXplciUyMHByb2Zlc3Npb25hbHxlbnwxfHx8fDE3NzE5Mjg1OTJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
-        },
-        {
-            id: 4,
-            number: '04',
-            title: 'The Culture of the Dance Floor',
-            guest: 'DJ Neptune',
-            description: 'Understanding the connection between music, movement, and culture.',
-            duration: '41 min',
-            date: 'Feb 5, 2026',
-            image: 'https://images.unsplash.com/photo-1683549581667-6a0203d3f24a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjbHViJTIwcGFydHklMjBjcm93ZCUyMGRhbmNpbmd8ZW58MXx8fHwxNzcxOTI4NTI1fDA&ixlib=rb-4.1.0&q=80&w=1080',
-        },
-        {
-            id: 5,
-            number: '05',
-            title: 'Influencer Impact',
-            guest: 'Toke Makinwa',
-            description: 'How social media is reshaping the nightlife ecosystem.',
-            duration: '36 min',
-            date: 'Feb 1, 2026',
-            image: 'https://images.unsplash.com/photo-1559154352-06e29e1e11aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhZnJpY2FuJTIwZmVtYWxlJTIwaW5mbHVlbmNlcnxlbnwxfHx8fDE3NzE5Mjg1OTF8MA&ixlib=rb-4.1.0&q=80&w=1080',
-        },
-        {
-            id: 6,
-            number: '06',
-            title: 'Behind the Booth',
-            guest: 'DJ Cuppy',
-            description: 'A global perspective on African nightlife and musical identity.',
-            duration: '43 min',
-            date: 'Jan 28, 2026',
-            image: 'https://images.unsplash.com/photo-1673447067622-bbc8a34e2c56?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhZnJpY2FuJTIwd29tYW4lMjBESnxlbnwxfHx8fDE3NzE5Mjg1OTB8MA&ixlib=rb-4.1.0&q=80&w=1080',
-        },
-    ];
+    const { podcasts, loading } = usePodcasts();
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#FFBD01]"></div>
+                    <p className="mt-4 text-gray-400">Chargement des podcasts...</p>
+                </div>
+            </div>
+        );
+    }
+
+    const episodes = podcasts.map(ep => ({
+        id: ep.id,
+        number: String(ep.episodeNumber).padStart(2, '0'),
+        title: ep.title,
+        guest: ep.guest || '',
+        description: ep.description || '',
+        duration: ep.duration || '',
+        date: ep.date || 'TBD',
+        image: ep.image || 'https://images.unsplash.com/photo-1511379938547-c1f69b13d835?w=500&h=500&fit=crop',
+        spotifyLink: ep.spotifyLink || '',
+    }));
+
+    const sortedEpisodes = [...episodes].sort((a, b) => parseInt(b.number) - parseInt(a.number));
 
     return (
         <div className="min-h-screen">
@@ -116,60 +81,65 @@ export default function Podcast() {
 
             {/* Featured Episode */}
             <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-                <motion.div
-                    className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-white/10 to-white/5 border border-[#FFBD01]/30"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                >
-                    <div className="grid md:grid-cols-2 gap-0">
-                        <div className="relative aspect-square md:aspect-auto">
-                            <ImageWithFallback
-                                src={episodes[0].image}
-                                alt={episodes[0].title}
-                                className="w-full h-full object-cover"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent md:hidden" />
-                        </div>
-
-                        <div className="p-8 lg:p-12 flex flex-col justify-center">
-                            <div className="inline-block px-4 py-1 rounded-full bg-[#FFBD01] text-black text-sm font-bold uppercase mb-4 self-start">
-                                Latest Episode
+                {sortedEpisodes.length > 0 && (
+                    <motion.div
+                        className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-white/10 to-white/5 border border-[#FFBD01]/30"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                    >
+                        <div className="grid md:grid-cols-2 gap-0">
+                            <div className="relative aspect-square md:aspect-auto">
+                                <ImageWithFallback
+                                    src={sortedEpisodes[0].image}
+                                    alt={sortedEpisodes[0].title}
+                                    className="w-full h-full object-cover"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent md:hidden" />
                             </div>
 
-                            <div className="text-sm text-[#FF6A01] font-bold uppercase mb-2">
-                                Episode {episodes[0].number}
-                            </div>
-
-                            <h2 className="text-3xl lg:text-4xl font-bold mb-4">{episodes[0].title}</h2>
-
-                            <p className="text-xl text-gray-300 mb-4">with {episodes[0].guest}</p>
-
-                            <p className="text-gray-400 mb-6 leading-relaxed">
-                                {episodes[0].description}
-                            </p>
-
-                            <div className="flex items-center gap-6 text-sm text-gray-400 mb-8">
-                                <div className="flex items-center gap-2">
-                                    <Calendar className="w-4 h-4" />
-                                    {episodes[0].date}
+                            <div className="p-8 lg:p-12 flex flex-col justify-center">
+                                <div className="inline-block px-4 py-1 rounded-full bg-[#FFBD01] text-black text-sm font-bold uppercase mb-4 self-start">
+                                    Latest Episode
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <Clock className="w-4 h-4" />
-                                    {episodes[0].duration}
-                                </div>
-                            </div>
 
-                            <motion.button
-                                className="group flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-[#FF0000] via-[#FF6A01] to-[#FFBD01] text-black font-bold uppercase self-start"
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                            >
-                                <Play className="w-5 h-5 fill-current" />
-                                Listen Now
-                            </motion.button>
+                                <div className="text-sm text-[#FF6A01] font-bold uppercase mb-2">
+                                    Episode {sortedEpisodes[0].number}
+                                </div>
+
+                                <h2 className="text-3xl lg:text-4xl font-bold mb-4">{sortedEpisodes[0].title}</h2>
+
+                                <p className="text-xl text-gray-300 mb-4">with {sortedEpisodes[0].guest}</p>
+
+                                <p className="text-gray-400 mb-6 leading-relaxed">
+                                    {sortedEpisodes[0].description}
+                                </p>
+
+                                <div className="flex items-center gap-6 text-sm text-gray-400 mb-8">
+                                    <div className="flex items-center gap-2">
+                                        <Calendar className="w-4 h-4" />
+                                        {sortedEpisodes[0].date}
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Clock className="w-4 h-4" />
+                                        {sortedEpisodes[0].duration}
+                                    </div>
+                                </div>
+
+                                <motion.a
+                                    href={sortedEpisodes[0].spotifyLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="group flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-[#FF0000] via-[#FF6A01] to-[#FFBD01] text-black font-bold uppercase self-start"
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    <Play className="w-5 h-5 fill-current" />
+                                    Listen Now
+                                </motion.a>
+                            </div>
                         </div>
-                    </div>
-                </motion.div>
+                    </motion.div>
+                )}
             </section>
 
             {/* All Episodes */}
@@ -180,8 +150,11 @@ export default function Podcast() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {episodes.map((episode, index) => (
-                        <motion.div
+                        <motion.a
                             key={episode.id}
+                            href={episode.spotifyLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="group relative rounded-3xl overflow-hidden bg-gradient-to-b from-white/10 to-white/5 border border-[#FFBD01]/20 hover:border-[#FFBD01] transition-all cursor-pointer"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -233,7 +206,7 @@ export default function Podcast() {
                                     </div>
                                 </div>
                             </div>
-                        </motion.div>
+                        </motion.a>
                     ))}
                 </div>
             </section>

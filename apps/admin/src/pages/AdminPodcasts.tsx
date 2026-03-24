@@ -1,43 +1,60 @@
 import { useState } from 'react';
 import { useAdminPodcasts } from '../hooks/useAdminPodcasts';
+import { useFileToBase64 } from '../hooks/useFileToBase64';
 import { Plus } from 'lucide-react';
 import { DeleteConfirmDialog } from '../components/modals/DeleteConfirmDialog';
 
 interface Podcast {
   id: string;
-  episodeNumber: number;
   title: string;
-  guest: string;
-  duration: string;
-  description: string;
+  spotifyLink: string;
+  episodeNumber?: number;
+  guest?: string;
+  duration?: string;
+  description?: string;
   image?: string;
   audioUrl?: string;
-  spotifyLink?: string;
-  order: number;
+  order?: number;
   createdAt: any;
   updatedAt: any;
 }
 
 export default function AdminPodcasts() {
   const { podcasts, loading, error, addPodcast, updatePodcast, deletePodcast } = useAdminPodcasts();
+  const { convertFile, loading: conversionLoading } = useFileToBase64();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPodcast, setEditingPodcast] = useState<Podcast | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deletingPodcast, setDeletingPodcast] = useState<Podcast | null>(null);
+  const [imageBase64, setImageBase64] = useState<string>('');
 
   const handleAddClick = () => {
     setEditingPodcast(null);
+    setImageBase64('');
     setIsModalOpen(true);
   };
 
   const handleEditClick = (podcast: Podcast) => {
     setEditingPodcast(podcast);
+    setImageBase64(podcast.image || '');
     setIsModalOpen(true);
   };
 
   const handleDeleteClick = (podcast: Podcast) => {
     setDeletingPodcast(podcast);
     setIsDeleteDialogOpen(true);
+  };
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        const base64 = await convertFile(file);
+        setImageBase64(base64);
+      } catch (error) {
+        console.error('Error converting image:', error);
+      }
+    }
   };
 
   const handleModalSubmit = async (data: Omit<Podcast, 'createdAt' | 'updatedAt'>) => {
@@ -221,22 +238,62 @@ export default function AdminPodcasts() {
                 const data = new FormData(form);
                 const podcastData: any = {
                   id: editingPodcast?.id || '',
-                  episodeNumber: parseInt(data.get('episodeNumber') as string) || 0,
                   title: data.get('title') as string,
-                  guest: data.get('guest') as string,
-                  duration: data.get('duration') as string,
-                  description: data.get('description') as string,
-                  image: data.get('image') as string,
-                  audioUrl: data.get('audioUrl') as string,
                   spotifyLink: data.get('spotifyLink') as string,
-                  order: parseInt(data.get('order') as string) || 0,
                   createdAt: editingPodcast?.createdAt,
                   updatedAt: new Date(),
                 };
+                // Ajouter les champs optionnels seulement s'ils sont remplis
+                const episodeNumber = data.get('episodeNumber') as string;
+                if (episodeNumber) podcastData.episodeNumber = parseInt(episodeNumber);
+
+                const guest = data.get('guest') as string;
+                if (guest) podcastData.guest = guest;
+
+                const duration = data.get('duration') as string;
+                if (duration) podcastData.duration = duration;
+
+                const description = data.get('description') as string;
+                if (description) podcastData.description = description;
+
+                if (imageBase64) podcastData.image = imageBase64;
+
+                const audioUrl = data.get('audioUrl') as string;
+                if (audioUrl) podcastData.audioUrl = audioUrl;
+
+                const order = data.get('order') as string;
+                if (order) podcastData.order = parseInt(order);
+
                 await handleModalSubmit(podcastData);
               }}
               className="p-4 md:p-6 space-y-4"
             >
+              {/* Title */}
+              <div>
+                <label className="block text-xs md:text-sm font-bold text-gray-300 mb-2 uppercase">Titre *</label>
+                <input
+                  type="text"
+                  name="title"
+                  defaultValue={editingPodcast?.title || ''}
+                  placeholder="ex: The Art of the DJ"
+                  className="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-sm md:text-base bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:outline-none focus:border-[#FFBD01] transition-colors"
+                  required
+                />
+              </div>
+
+              {/* Podcast Link */}
+              <div>
+                <label className="block text-xs md:text-sm font-bold text-gray-300 mb-2 uppercase">Lien (Spotify, Instagram, etc.) *</label>
+                <input
+                  type="url"
+                  name="spotifyLink"
+                  defaultValue={editingPodcast?.spotifyLink || ''}
+                  placeholder="https://spotify.com/episode/... ou https://instagram.com/..."
+                  className="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-sm md:text-base bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:outline-none focus:border-[#FFBD01] transition-colors"
+                  required
+                />
+              </div>
+
               {/* Episode Number */}
               <div>
                 <label className="block text-xs md:text-sm font-bold text-gray-300 mb-2 uppercase">Numéro Episode</label>
@@ -246,20 +303,6 @@ export default function AdminPodcasts() {
                   defaultValue={editingPodcast?.episodeNumber || ''}
                   placeholder="e.g. 1"
                   className="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-sm md:text-base bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:outline-none focus:border-[#FFBD01] transition-colors"
-                  required
-                />
-              </div>
-
-              {/* Title */}
-              <div>
-                <label className="block text-xs md:text-sm font-bold text-gray-300 mb-2 uppercase">Titre</label>
-                <input
-                  type="text"
-                  name="title"
-                  defaultValue={editingPodcast?.title || ''}
-                  placeholder="ex: The Art of the DJ"
-                  className="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-sm md:text-base bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:outline-none focus:border-[#FFBD01] transition-colors"
-                  required
                 />
               </div>
 
@@ -272,7 +315,6 @@ export default function AdminPodcasts() {
                   defaultValue={editingPodcast?.guest || ''}
                   placeholder="ex: DJ Spinall"
                   className="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-sm md:text-base bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:outline-none focus:border-[#FFBD01] transition-colors"
-                  required
                 />
               </div>
 
@@ -285,7 +327,6 @@ export default function AdminPodcasts() {
                   defaultValue={editingPodcast?.duration || ''}
                   placeholder="ex: 45 min"
                   className="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-sm md:text-base bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:outline-none focus:border-[#FFBD01] transition-colors"
-                  required
                 />
               </div>
 
@@ -298,20 +339,32 @@ export default function AdminPodcasts() {
                   placeholder="Description de l'épisode..."
                   rows={3}
                   className="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-sm md:text-base bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:outline-none focus:border-[#FFBD01] transition-colors resize-none"
-                  required
                 />
               </div>
 
-              {/* Image URL */}
+              {/* Image Upload */}
               <div>
-                <label className="block text-xs md:text-sm font-bold text-gray-300 mb-2 uppercase">Image URL</label>
-                <input
-                  type="url"
-                  name="image"
-                  defaultValue={editingPodcast?.image || ''}
-                  placeholder="https://images.unsplash.com/photo-..."
-                  className="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-sm md:text-base bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:outline-none focus:border-[#FFBD01] transition-colors"
-                />
+                <label className="block text-xs md:text-sm font-bold text-gray-300 mb-2 uppercase">Image</label>
+                <div className="flex gap-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    disabled={conversionLoading}
+                    className="flex-1 px-3 md:px-4 py-2 md:py-3 rounded-lg text-sm md:text-base bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:outline-none focus:border-[#FFBD01] transition-colors file:bg-[#FFBD01] file:text-black file:font-bold file:border-0 file:rounded cursor-pointer"
+                  />
+                </div>
+                {conversionLoading && <p className="text-xs text-[#FFBD01] mt-2">Conversion en cours...</p>}
+                {imageBase64 && (
+                  <div className="mt-3 w-full border border-[#FFBD01]/30 rounded-lg overflow-hidden bg-black">
+                    <img
+                      src={imageBase64}
+                      alt="Preview"
+                      className="w-full h-auto max-h-40 object-cover"
+                    />
+                    <p className="text-xs text-gray-500 p-2">Aperçu de l'image</p>
+                  </div>
+                )}
               </div>
 
               {/* Audio URL */}
@@ -326,18 +379,6 @@ export default function AdminPodcasts() {
                 />
               </div>
 
-              {/* Spotify Link */}
-              <div>
-                <label className="block text-xs md:text-sm font-bold text-gray-300 mb-2 uppercase">Lien Spotify</label>
-                <input
-                  type="url"
-                  name="spotifyLink"
-                  defaultValue={editingPodcast?.spotifyLink || ''}
-                  placeholder="https://spotify.com/episode/..."
-                  className="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-sm md:text-base bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:outline-none focus:border-[#FFBD01] transition-colors"
-                />
-              </div>
-
               {/* Order */}
               <div>
                 <label className="block text-xs md:text-sm font-bold text-gray-300 mb-2 uppercase">Ordre</label>
@@ -347,7 +388,6 @@ export default function AdminPodcasts() {
                   defaultValue={editingPodcast?.order || ''}
                   placeholder="1"
                   className="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg text-sm md:text-base bg-white/10 border border-white/20 text-white placeholder-gray-500 focus:outline-none focus:border-[#FFBD01] transition-colors"
-                  required
                 />
               </div>
 
@@ -355,7 +395,10 @@ export default function AdminPodcasts() {
               <div className="flex gap-2 md:gap-3 pt-4 border-t border-white/10">
                 <button
                   type="button"
-                  onClick={() => setIsModalOpen(false)}
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    setImageBase64('');
+                  }}
                   className="flex-1 px-3 md:px-4 py-2 md:py-3 rounded-lg text-xs md:text-base bg-white/10 hover:bg-white/20 text-white font-bold transition-colors"
                 >
                   Annuler

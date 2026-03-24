@@ -3,6 +3,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
+import Link from 'next/link';
 import { Disc3, Mic2, Users, Calendar } from 'lucide-react';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 import { VoteModal } from '@/components/VoteModal';
@@ -21,8 +22,8 @@ type Nominee = {
     id: string;
     name: string;
     image: string;
-    bio: string;
     categoryId: string;
+    createdAt: any;
 };
 
 function AwardsContent() {
@@ -55,8 +56,8 @@ function AwardsContent() {
         id: nom.id,
         name: nom.name,
         image: nom.image,
-        bio: nom.bio,
         categoryId: nom.categoryId,
+        createdAt: nom.createdAt,
     }));
 
     // Smooth scroll to categories section when coming from Home page "Vote Now" button
@@ -79,6 +80,16 @@ function AwardsContent() {
             category: category?.name || '',
         });
         setVoteModalOpen(true);
+    };
+
+    const formatDate = (date: any) => {
+        if (!date) return '';
+        try {
+            const d = date.toDate ? date.toDate() : new Date(date);
+            return d.toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
+        } catch {
+            return '';
+        }
     };
 
     // Show loading state while fetching Firestore data
@@ -241,84 +252,89 @@ function AwardsContent() {
                                                     </span>
                                                 </h2>
 
-                                                <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
                                                     {categoryNominees.map((nominee, idx) => (
-                                                        <motion.div
-                                                            key={nominee.id}
-                                                            className="group relative rounded-2xl sm:rounded-3xl overflow-hidden bg-gradient-to-b from-white/10 to-white/5 backdrop-blur-sm border border-[#FFBD01]/20 hover:border-[#FFBD01] transition-all flex flex-col"
-                                                            initial={{ opacity: 0, y: 20 }}
-                                                            animate={{ opacity: 1, y: 0 }}
-                                                            transition={{ delay: idx * 0.1 }}
-                                                            whileHover={{ y: -6 }}
-                                                        >
-                                                            {/* Nominee Photo with Laurel Overlay */}
-                                                            <div className="relative aspect-square overflow-hidden shrink-0">
-                                                                <ImageWithFallback
-                                                                    src={nominee.image}
-                                                                    alt={nominee.name}
-                                                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                                                />
+                                                        <Link key={nominee.id} href={`/awards/${nominee.id}`}>
+                                                            <motion.div
+                                                                className="group relative rounded-2xl sm:rounded-3xl overflow-hidden bg-gradient-to-b from-white/10 to-white/5 backdrop-blur-sm border border-[#FFBD01]/20 hover:border-[#FFBD01] transition-all flex flex-col cursor-pointer h-full"
+                                                                initial={{ opacity: 0, y: 20 }}
+                                                                animate={{ opacity: 1, y: 0 }}
+                                                                transition={{ delay: idx * 0.1 }}
+                                                                whileHover={{ y: -6, scale: 1.02 }}
+                                                            >
+                                                                {/* Nominee Photo with Laurel Overlay */}
+                                                                <div className="relative aspect-square overflow-hidden shrink-0">
+                                                                    <ImageWithFallback
+                                                                        src={nominee.image}
+                                                                        alt={nominee.name}
+                                                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                                                    />
 
-                                                                {/* Golden Laurel Wreath Overlay */}
-                                                                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
-                                                                <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-4">
-                                                                    <svg
-                                                                        viewBox="0 0 200 100"
-                                                                        className="w-full h-auto opacity-80 group-hover:opacity-100 transition-opacity"
-                                                                    >
-                                                                        {/* Left Laurel Branch */}
-                                                                        <path
-                                                                            d="M 30 80 Q 25 70, 22 60 Q 20 50, 22 40 Q 25 30, 30 25"
-                                                                            stroke="#FFBD01"
-                                                                            strokeWidth="2"
-                                                                            fill="none"
-                                                                        />
-                                                                        {/* Right Laurel Branch */}
-                                                                        <path
-                                                                            d="M 170 80 Q 175 70, 178 60 Q 180 50, 178 40 Q 175 30, 170 25"
-                                                                            stroke="#FFBD01"
-                                                                            strokeWidth="2"
-                                                                            fill="none"
-                                                                        />
-                                                                        {/* Bottom Arc */}
-                                                                        <path
-                                                                            d="M 30 80 Q 100 90, 170 80"
-                                                                            stroke="#FFBD01"
-                                                                            strokeWidth="2.5"
-                                                                            fill="none"
-                                                                        />
-                                                                        {/* Decorative Leaves */}
-                                                                        {[25, 35, 45, 55, 65].map((x) => (
-                                                                            <circle key={`left-${x}`} cx={x} cy={70 - (x - 25) * 2} r="3" fill="#FFBD01" />
-                                                                        ))}
-                                                                        {[135, 145, 155, 165, 175].map((x) => (
-                                                                            <circle key={`right-${x}`} cx={x} cy={70 - (175 - x) * 2} r="3" fill="#FFBD01" />
-                                                                        ))}
-                                                                    </svg>
+                                                                    {/* Golden Laurel Wreath Overlay */}
+                                                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+                                                                    <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-4">
+                                                                        <svg
+                                                                            viewBox="0 0 200 100"
+                                                                            className="w-full h-auto opacity-80 group-hover:opacity-100 transition-opacity"
+                                                                        >
+                                                                            {/* Left Laurel Branch */}
+                                                                            <path
+                                                                                d="M 30 80 Q 25 70, 22 60 Q 20 50, 22 40 Q 25 30, 30 25"
+                                                                                stroke="#FFBD01"
+                                                                                strokeWidth="2"
+                                                                                fill="none"
+                                                                            />
+                                                                            {/* Right Laurel Branch */}
+                                                                            <path
+                                                                                d="M 170 80 Q 175 70, 178 60 Q 180 50, 178 40 Q 175 30, 170 25"
+                                                                                stroke="#FFBD01"
+                                                                                strokeWidth="2"
+                                                                                fill="none"
+                                                                            />
+                                                                            {/* Bottom Arc */}
+                                                                            <path
+                                                                                d="M 30 80 Q 100 90, 170 80"
+                                                                                stroke="#FFBD01"
+                                                                                strokeWidth="2.5"
+                                                                                fill="none"
+                                                                            />
+                                                                            {/* Decorative Leaves */}
+                                                                            {[25, 35, 45, 55, 65].map((x) => (
+                                                                                <circle key={`left-${x}`} cx={x} cy={70 - (x - 25) * 2} r="3" fill="#FFBD01" />
+                                                                            ))}
+                                                                            {[135, 145, 155, 165, 175].map((x) => (
+                                                                                <circle key={`right-${x}`} cx={x} cy={70 - (175 - x) * 2} r="3" fill="#FFBD01" />
+                                                                            ))}
+                                                                        </svg>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
 
-                                                            {/* Nominee Info */}
-                                                            <div className="p-3 sm:p-6 flex flex-col flex-1">
-                                                                <h3 className="text-base sm:text-xl font-bold mb-1 text-white group-hover:text-[#FFBD01] transition-colors line-clamp-1">
-                                                                    {nominee.name}
-                                                                </h3>
-                                                                <p className="text-xs sm:text-sm text-gray-400 mb-3 sm:mb-4 line-clamp-2 min-h-[32px] sm:min-h-[40px]">{nominee.bio}</p>
+                                                                {/* Nominee Info */}
+                                                                <div className="p-3 sm:p-6 flex flex-col flex-1">
+                                                                    <h3 className="text-base sm:text-xl font-bold mb-2 text-white group-hover:text-[#FFBD01] transition-colors line-clamp-1">
+                                                                        {nominee.name}
+                                                                    </h3>
+                                                                    <p className="text-xs sm:text-sm text-gray-400 mb-1">{category.name}</p>
+                                                                    <p className="text-xs text-gray-500 mb-3 sm:mb-4">{formatDate(nominee.createdAt)}</p>
 
-                                                                {/* Vote Button */}
-                                                                <motion.button
-                                                                    onClick={() => handleVote(nominee)}
-                                                                    className="w-full mt-auto py-2 sm:py-3 rounded-full border border-[#FF6A01] sm:border-2 text-[#FF6A01] font-bold uppercase text-[10px] sm:text-sm hover:bg-[#FF6A01] hover:text-black transition-all"
-                                                                    whileHover={{ scale: 1.05 }}
-                                                                    whileTap={{ scale: 0.95 }}
-                                                                >
-                                                                    Vote
-                                                                </motion.button>
-                                                            </div>
+                                                                    {/* Vote Button */}
+                                                                    <motion.button
+                                                                        onClick={(e) => {
+                                                                            e.preventDefault();
+                                                                            handleVote(nominee);
+                                                                        }}
+                                                                        className="w-full mt-auto py-2 sm:py-3 rounded-full border border-[#FF6A01] sm:border-2 text-[#FF6A01] font-bold uppercase text-[10px] sm:text-sm hover:bg-[#FF6A01] hover:text-black transition-all"
+                                                                        whileHover={{ scale: 1.05 }}
+                                                                        whileTap={{ scale: 0.95 }}
+                                                                    >
+                                                                        Vote
+                                                                    </motion.button>
+                                                                </div>
 
-                                                            {/* Glassmorphism Effect */}
-                                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-                                                        </motion.div>
+                                                                {/* Glassmorphism Effect */}
+                                                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                                                            </motion.div>
+                                                        </Link>
                                                     ))}
                                                 </div>
                                             </div>
