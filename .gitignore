@@ -48,3 +48,4 @@ pnpm-debug.log*
 # Misc
 .cache
 .turbo
+firebase/afrolaks-service-account.json

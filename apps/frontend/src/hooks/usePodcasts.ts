@@ -31,6 +31,8 @@ export interface Podcast {
   title: string;
   guest: string;
   duration: string;
+  image?: string;
+  date?: string;
   description?: string;
   audioUrl?: string;
   spotifyLink?: string;
