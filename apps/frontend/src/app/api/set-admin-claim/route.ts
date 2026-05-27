@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { initializeApp, getApps } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { credential } from 'firebase-admin';
