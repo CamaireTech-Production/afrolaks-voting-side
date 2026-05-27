@@ -1,43 +1,33 @@
 export const dynamic = 'force-dynamic';
 
-import { initializeApp, getApps } from 'firebase-admin/app';
+import { initializeApp, getApps, getApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { credential } from 'firebase-admin';
 import * as admin from 'firebase-admin';
 import { NextRequest, NextResponse } from 'next/server';
 
-// Initialize Firebase Admin SDK
-const adminApp = getApps().length
-  ? getApps()[0]
-  : initializeApp({
-      credential: credential.cert({
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-      } as admin.ServiceAccount),
-    });
+function getAdminApp() {
+  if (getApps().length) return getApp();
+  return initializeApp({
+    credential: credential.cert({
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+    } as admin.ServiceAccount),
+  });
+}
 
 export async function POST(request: NextRequest) {
   try {
     const { email } = await request.json();
 
     if (!email) {
-      return NextResponse.json(
-        { error: 'Email requis' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Email requis' }, { status: 400 });
     }
 
-    console.log(`🔐 Ajout du custom claim admin à: ${email}`);
-
-    const auth = getAuth(adminApp);
-
-    // Obtenir l'utilisateur par email et ajouter le custom claim
+    const auth = getAuth(getAdminApp());
     const user = await auth.getUserByEmail(email);
-
     await auth.setCustomUserClaims(user.uid, { admin: true });
-
-    console.log(`✅ Custom claim admin ajouté à ${email}`);
 
     return NextResponse.json(
       {
@@ -49,10 +39,9 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error('❌ Erreur:', error);
-    const errorMessage = (error as Error).message || 'Erreur serveur';
+    console.error('Erreur set-admin-claim:', error);
     return NextResponse.json(
-      { error: errorMessage },
+      { error: (error as Error).message || 'Erreur serveur' },
       { status: 500 }
     );
   }

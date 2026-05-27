@@ -1,51 +1,38 @@
 export const dynamic = 'force-dynamic';
 
-/**
- * API Route: POST /api/contact
- * Handles contact form submissions
- *
- * Deployed free on Vercel with Next.js
- */
-
 import { NextRequest, NextResponse } from 'next/server';
 import * as admin from 'firebase-admin';
 
-// Initialize Firebase Admin SDK (reuses previous init if already done)
-if (!admin.apps.length) {
-  const serviceAccount = {
-    projectId: process.env.FIREBASE_PROJECT_ID,
-    privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-  };
-
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-  });
+function getDb() {
+  if (!admin.apps.length) {
+    admin.initializeApp({
+      credential: admin.credential.cert({
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      } as admin.ServiceAccount),
+    });
+  }
+  return admin.firestore();
 }
-
-const db = admin.firestore();
 
 export async function POST(request: NextRequest) {
   try {
     const { name, email, subject, message } = await request.json();
 
-    // Validation
     if (!name || !email || !subject || !message) {
       return NextResponse.json(
-        {
-          error: 'Missing required fields: name, email, subject, message',
-        },
+        { error: 'Missing required fields: name, email, subject, message' },
         { status: 400 }
       );
     }
 
-    // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json({ error: 'Invalid email format' }, { status: 400 });
     }
 
-    // Create contact submission record
+    const db = getDb();
     const contactRef = db.collection('contactSubmissions').doc();
     await contactRef.set({
       id: contactRef.id,
@@ -72,10 +59,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error submitting contact form:', error);
     return NextResponse.json(
-      {
-        error: 'Failed to submit contact form',
-        details: (error as Error).message,
-      },
+      { error: 'Failed to submit contact form', details: (error as Error).message },
       { status: 500 }
     );
   }
