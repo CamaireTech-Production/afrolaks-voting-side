@@ -41,6 +41,7 @@ pnpm-debug.log*
 .runtimeconfig.json
 .firebase/
 firebase/afrolaks-service-account.json
+afrolaks-5eaaa-firebase-adminsdk-fbsvc-c9de57b05f.json
 
 # macOS
 .DS_Store

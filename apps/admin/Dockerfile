@@ -1,8 +1,8 @@
 # ── Stage 1: Build Vite app ────────────────────────────────────────────────────
 FROM node:20-alpine AS builder
 WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci
+COPY package.json package-lock.json* ./
+RUN npm install
 COPY . .
 
 # VITE_* vars MUST be present at build time — Vite bakes them into the bundle
